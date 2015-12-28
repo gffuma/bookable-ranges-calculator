@@ -51,15 +51,7 @@ const setRangeDay = R.curry((m, range) => {
 const setRangesDay = R.curry((m, ranges) => R.map(setRangeDay(m), ranges));
 
 // Calculate bookable time ranges without worrying about workstation
-const calculateBookableRangesSimply = (options, m, r) => {
-
-  // Recursion shortcut
-  const calculate = R.curry(calculateBookableRangesSimply)(options);
-
-  const startRangeMoment = R.defaultTo(options.period.start, m);
-
-  const bookableRanges = R.defaultTo([], r);
-  const appendToBookableRanges = R.append(R.__, bookableRanges);
+const calculateBookableRangesSimply = (options) => {
 
   const addBookingDuration = M.addDuration(options.bookingDuration);
   const addPaddingDuration = M.addDuration(options.paddingDuration);
@@ -93,55 +85,64 @@ const calculateBookableRangesSimply = (options, m, r) => {
 
   const isRangeInPeriod = containsRange(options.period);
 
-  const endRangeMoment = addBookingDuration(startRangeMoment);
-  const range = {
-    start: startRangeMoment,
-    end: endRangeMoment
-  };
+  // Recursion function
+  const calculate = (startRangeMoment, bookableRanges) => {
 
-  // End of recursion, finally return all saved bookableRanges
-  if (! isRangeInPeriod(range)) {
-    return bookableRanges;
-  }
+    const appendToBookableRanges = R.append(R.__, bookableRanges);
 
-  // TODO: Range with different days not handled...
-  if (! isRangeSameDay(range)) {
-    return calculate(M.startOfDay(range.end), bookableRanges);
-  }
+    const endRangeMoment = addBookingDuration(startRangeMoment);
+    const range = {
+      start: startRangeMoment,
+      end: endRangeMoment
+    };
 
-  // Check the day if invalid go to start of next day
-  if (! isValidDay(range.start)) {
-    return calculate(M.startOfNextDay(range.start), bookableRanges);
-  }
-
-  // Bookable ranges must be in a valid working range,
-  // if isn't take the near start of working range if exist
-  // or fallback to the next day
-  const workingHours = getWorkingHoursFixed(range.start);
-
-  if (! containedInRanges(workingHours, range)) {
-
-    const nearWorkingRange = nearRange(workingHours, range);
-
-    if (nearWorkingRange === undefined) {
-      return calculate(M.startOfNextDay(range.start), bookableRanges);
-    } else {
-      return calculate(nearWorkingRange.start, bookableRanges);
+    // End of recursion, finally return all saved bookableRanges
+    if (! isRangeInPeriod(range)) {
+      return bookableRanges;
     }
 
-  }
+    // TODO: Range with different days not handled...
+    if (! isRangeSameDay(range)) {
+      return calculate(M.startOfDay(range.end), bookableRanges);
+    }
 
-  // Overlapped bookings of current range
-  const overlappedBookings = R.filter(overlapRange(range), options.bookings);
+    // Check the day if invalid go to start of next day
+    if (! isValidDay(range.start)) {
+      return calculate(M.startOfNextDay(range.start), bookableRanges);
+    }
 
-  if (overlappedBookings.length) {
+    // Bookable ranges must be in a valid working range,
+    // if isn't take the near start of working range if exist
+    // or fallback to the next day
+    const workingHours = getWorkingHoursFixed(range.start);
 
-    const rangeMoreFar = R.last(R.sortBy(R.prop('end'), overlappedBookings));
-    return calculate(addPaddingDuration(rangeMoreFar.end), bookableRanges);
-  }
+    if (! containedInRanges(workingHours, range)) {
 
-  // Range ok, next range with padding
-  return calculate(addPaddingDuration(range.end), appendToBookableRanges(range));
+      const nearWorkingRange = nearRange(workingHours, range);
+
+      if (nearWorkingRange === undefined) {
+        return calculate(M.startOfNextDay(range.start), bookableRanges);
+      } else {
+        return calculate(nearWorkingRange.start, bookableRanges);
+      }
+
+    }
+
+    // Overlapped bookings of current range
+    const overlappedBookings = R.filter(overlapRange(range), options.bookings);
+
+    if (overlappedBookings.length) {
+
+      const rangeMoreFar = R.last(R.sortBy(R.prop('end'), overlappedBookings));
+      return calculate(addPaddingDuration(rangeMoreFar.end), bookableRanges);
+    }
+
+    // Range ok, next range with padding
+    return calculate(addPaddingDuration(range.end), appendToBookableRanges(range));
+  };
+
+  return calculate(options.period.start, []);
+
 };
 
 // Calculate bookable ranges

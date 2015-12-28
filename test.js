@@ -11,7 +11,7 @@ const impure = {
 // Data
 const period = {
   start: moment('2015-12-06'),
-  end: moment('2017-02-09')
+  end: moment('2016-02-09')
 };
 
 const bookingDuration = moment.duration(1, 'hours');
@@ -70,7 +70,7 @@ const bookings = [
   //]
 //};
 
-const workstationIds = [1, 2, 3];
+const workstationIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 const rr = awesomeStuff({
   workstationIds,
