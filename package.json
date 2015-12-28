@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "dependencies": {
+    "moment": "^2.10.6",
+    "ramda": "^0.18.0"
+  },
+  "main": "./bookable-ranges-calculator.js",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.3.13"
+  }
+}
