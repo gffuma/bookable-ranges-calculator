@@ -1,6 +1,7 @@
 import moment from 'moment';
 import R from 'ramda';
-import awesomeStuff from './src/bookable-range-calculator.js';
+import awesomeStuff from './lib/bookable-ranges-calculator.js';
+console.log(awesomeStuff);
 
 
 const impure = {
