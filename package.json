@@ -4,7 +4,8 @@
   "description": "Calculate bookable ranges of time in λ way with moment.js",
   "scripts": {
     "clean": "rimraf lib && mkdirp lib",
-    "build": "npm run clean && babel src -d lib"
+    "build": "npm run clean && babel src -d lib",
+    "test": "mocha"
   },
   "main": "./dist/bookable-ranges-calculator.js",
   "dependencies": {
@@ -16,6 +17,7 @@
     "babel-plugin-add-module-exports": "^0.1.2",
     "babel-preset-es2015": "^6.3.13",
     "mkdirp": "^0.5.1",
+    "mocha": "^2.3.4",
     "rimraf": "^2.5.0"
   }
 }

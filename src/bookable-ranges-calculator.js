@@ -1,6 +1,6 @@
 import moment from 'moment';
 import R from 'ramda';
-import * as M from './moment-funct.js';
+import * as M from './moment-funct';
 
 // Check if range is in the same day
 const isRangeSameDay = (range) => M.isSameDay(range.start, range.end);

@@ -1,6 +1,6 @@
 var moment = require('moment');
-var util = require('./util.js');
-var calculateRanges = require('./../lib/bookable-ranges-calculator.js');
+var util = require('./util');
+var calculateRanges = require('./../lib/bookable-ranges-calculator');
 
 var bookableRanges = calculateRanges({
 
