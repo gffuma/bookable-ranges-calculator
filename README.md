@@ -144,3 +144,18 @@ Here the result:
   }
 ]
 ```
+
+Available Options
+=================
+ * **period**: ```{ start: moment(), end: moment() }``` The period of booking.
+ * **bookingDuration**: ```moment.duration``` The duration of booked range.
+ * **paddingDuration**: ```moment.duration``` The interval between a bookable range and other and between range and booking.
+ * **bookings**: ```[{start: moment(), end: moment()}, workstationId: Number]```
+  List of bookings, if ```workstationIds``` is present every booking must have a ```workstationId``` field.
+ * **workstationIds**: ```[Number]``` All workstation available for booking.
+ * **weekWorkingHours**: ```{ dayOfWeek: [{ start: moment(), end: moment() }] }```
+ Normal week working hours, ```dayOfWeek``` use moment standard so Sunday as 0 and Saturday as 6.
+ * **specialWorkingHours**: ```{ date: [{ start: moment(), end: moment() }] }```
+ Special working hours (overwrite ```weekWorkingHours``` and ```fixedClosingDays```), date is a string in the format YYYY-MM-DD.
+ * **fixedClosingDays**: ```[moment]``` all days to excluded from calculation (year ignored).
+ * **specialClosingDays**: ```[moment]``` all dates to exclude from calculate.
